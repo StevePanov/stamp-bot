@@ -67,11 +67,16 @@ bot.on('message', function(msg) {
 });
 
 bot.onText(/\/start/, function (msg, match) {
-    fs.readdir("img/"+msg.from.id, function(err, content){
+    fs.readdir("img/"+msg.from.id, function(err, content) {
         if (err) {
             bot.sendMessage(msg.chat.id, 'Добавьте вашу печать.');
         } else {
-            bot.sendMessage(msg.chat.id, 'Выберите действие:', options);
+            if (!content.length) {
+                bot.sendMessage(msg.chat.id, 'У вас нет печатей, добавьте новые');
+            } else {
+                bot.sendMessage(msg.chat.id, 'Выберите действие:', options);
+            }
+            
         }
     })
 });
@@ -83,11 +88,9 @@ bot.on('callback_query', function(msg) {
             if(error) {
                 console.log(error);
             } else {
-            for (let i =0; i<items.length; i++) {
-                fs.readFile("img/"+msg.from.id+"/"+items[i], function(err, content) {
-                    bot.sendPhoto(msg.from.id, content, {caption: items[i]});
-                })
-            }
+                for (let i =0; i<items.length; i++) {
+                    bot.sendPhoto(msg.from.id, 'img/'+msg.from.id+'/'+items[i], {caption: items[i]});
+                }
             }
         })
     }
