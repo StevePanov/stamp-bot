@@ -5,7 +5,6 @@ var mkdirp = require('mkdirp');
 
 const TOKEN ='549819746:AAHrHrlREF6uRSIRcLPCs9upjYK7ggCMc6I';
 
-
 var isDeletingMode = false;
 var botOptions = { polling: true };
 var bot = new TelegramBot(TOKEN, botOptions);
