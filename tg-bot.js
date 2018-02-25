@@ -118,13 +118,13 @@ bot.on('callback_query', function(msg) {
 
         exec('./opencv '+ url_img, (err, stdout, stderr) => {
             if (err) {
-              console.log(`stdout: ${stderr}, path: ${'./opencv '+ url_img}`);
-              return;
+              console.log("Error while exec", err);
+              console.log("stderr while exec", stderr);
+            } else {
+                console.log("Success!!!");
+                console.log(`stdout: ${stdout}`);
+                console.log(`stderr: ${stderr}`);
             }
-          
-            // the *entire* stdout and stderr (buffered)
-            console.log(`stdout: ${stdout}`);
-            console.log(`stderr: ${stderr}`);
           });
     }); 
  }
