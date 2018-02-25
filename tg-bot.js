@@ -3,7 +3,7 @@ var request = require('request');
 var fs      = require('fs');
 var mkdirp = require('mkdirp');
 
-const TOKEN ='549819746:AAHrHrlREF6uRSIRcLPCs9upjYK7ggCMc6I';
+const TOKEN ='535543758:AAHwAUsZuYbz6kZ2K4qQky2w8ImqIqQr64w';
 const { exec } = require('child_process');
 
 var isDeletingMode = false;
@@ -14,7 +14,7 @@ var waitingPhoto = false;
 var options = {
     reply_markup: JSON.stringify({
       inline_keyboard: [
-        [{ text: 'Показать все', callback_data: 'data 1' }, { text: 'Удалить', callback_data: 'data 2' }]
+        [{ text: 'Показать все', callback_data: '/showAll' }, { text: 'Удалить', callback_data: 'delete' }]
       ]
     })
   };
@@ -28,7 +28,8 @@ bot.on('message', function(msg) {
 
     if (msg.photo !== undefined) {
         var leng = msg.photo.length - parseInt(1); // max размер
-        var str = "https://api.telegram.org/bot"+TOKEN+"/getfile?file_id="+msg.photo[leng].file_id;
+        console.log(msg.photo);
+        var str = "https://api.telegram.org/bot"+TOKEN+"/getfile?file_id="+msg.photo[1].file_id;
         request(str, function (error, response, body) {
             var body_ = JSON.parse(body)
             var path_ = body_.result.file_path
@@ -81,12 +82,50 @@ bot.onText(/\/start/, function (msg, match) {
     })
 });
 
+bot.onText(/\/delete/, function (msg, match) {
+
+    fs.readdir("img/"+msg.from.id, function(error, items) {
+        if(error) {
+            console.log(error);
+        } else {
+            if (!items.length) {
+                bot.sendMessage(msg.from.id, 'Нет печатей для просмотра, добавьте новые');
+            } else {
+                for (let i =0; i<items.length; i++) {
+                    bot.sendPhoto(msg.from.id, 'img/'+msg.from.id+'/'+items[i], {caption: items[i]});
+                }
+            }
+        }
+    })
+
+
+    isDeletingMode = true;
+});
+
+bot.onText(/\/showall/, function (msg, match) {
+    fs.readdir("img/"+msg.from.id, function(error, items) {
+        if(error) {
+            console.log(error);
+        } else {
+            if (!items.length) {
+                bot.sendMessage(msg.from.id, 'Нет печатей для просмотра, добавьте новые');
+            } else {
+                for (let i =0; i<items.length; i++) {
+                    bot.sendPhoto(msg.from.id, 'img/'+msg.from.id+'/'+items[i], {caption: items[i]});
+                }
+            }
+        }
+    })
+});
+
+
+
 function menuDialogue() {
 }
 
 bot.on('callback_query', function(msg) {
     console.log('msg> callback', msg.data);
-    if (msg.data ==='data 1') {
+    if (msg.data ==='/showAll') {
         fs.readdir("img/"+msg.from.id, function(error, items) {
             if(error) {
                 console.log(error);
@@ -102,7 +141,7 @@ bot.on('callback_query', function(msg) {
         })
     }
 
-    if (msg.data ==='data 2') {
+    if (msg.data ==='/delete') {
         bot.sendMessage(msg.from.id, "Запишите номер фото:");
         isDeletingMode = true;
     }
