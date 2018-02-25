@@ -118,7 +118,7 @@ bot.on('callback_query', function(msg) {
 
         exec('./opencv '+ url_img, (err, stdout, stderr) => {
             if (err) {
-              console.log(`stdout: ${stderr}`);
+              console.log(`stdout: ${stderr}, path: ${'./opencv '+ url_img}`);
               return;
             }
           
