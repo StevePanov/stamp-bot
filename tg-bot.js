@@ -80,6 +80,10 @@ bot.onText(/\/start/, function (msg, match) {
     })
 });
 
+bot.onText(/\/help/, function (msg, match) {
+    bot.sendMessage(msg.chat.id, '/start\n/showall\n/delete');
+});
+
 bot.onText(/\/delete/, function (msg, match) {
     fs.readdir("img/"+msg.from.id, function(error, items) {
         if(error) {
