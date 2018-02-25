@@ -29,7 +29,7 @@ bot.on('message', function(msg) {
     if (msg.photo !== undefined) {
         var leng = msg.photo.length - parseInt(1); // max размер
         console.log(msg.photo);
-        var str = "https://api.telegram.org/bot"+TOKEN+"/getfile?file_id="+msg.photo[1].file_id;
+        var str = "https://api.telegram.org/bot"+TOKEN+"/getfile?file_id="+msg.photo[length].file_id;
         request(str, function (error, response, body) {
             var body_ = JSON.parse(body)
             var path_ = body_.result.file_path
