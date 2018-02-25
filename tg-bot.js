@@ -14,7 +14,7 @@ var waitingPhoto = false;
 var options = {
     reply_markup: JSON.stringify({
       inline_keyboard: [
-        [{ text: 'Показать все', callback_data: '/showAll' }, { text: 'Удалить', callback_data: 'delete' }]
+        [{ text: 'Показать все', callback_data: '/showAll' }, { text: 'Удалить', callback_data: '/delete' }]
       ]
     })
   };
@@ -122,7 +122,7 @@ bot.on('callback_query', function(msg) {
                     bot.sendMessage(msg.from.id, 'Нет печатей для просмотра, добавьте новые');
                 } else {
                     for (let i =0; i<items.length; i++) {
-                        bot.sendPhoto(msg.from.id, 'img/'+msg.from.id+'/'+items[i], {caption: items[i]});
+                        bot.sendPhoto(msg.from.id, 'img/'+msg.from.id+'/'+items[i], {caption: "/"+items[i]+"[0-9]/"});
                     }
                 }
             }
@@ -130,7 +130,18 @@ bot.on('callback_query', function(msg) {
     }
 
     if (msg.data ==='/delete') {
-        bot.sendMessage(msg.from.id, "Запишите номер фото:");
+        fs.readdir("img/"+msg.from.id, function(error, items) {
+            if(error) {
+                console.log(error);
+            } else {
+                if (!items.length) {
+                    bot.sendMessage(msg.from.id, 'Нет печатей для удаления, добавьте новые');
+                } else {
+                    bot.sendMessage(msg.from.id, "Запишите номер фото:");
+                    isDeletingMode = true;
+                }
+            }
+        })
         isDeletingMode = true;
     }
 });
@@ -140,7 +151,7 @@ bot.on('callback_query', function(msg) {
         if(err)
         console.log(err); 
         else
-        bot.sendMessage(messageChatId, "Файл сохранен -> "+ url_img, options);
+        bot.sendMessage(messageChatId, "Обработка завершена.", options);
 
         exec('./opencv '+ url_img, (err, stdout, stderr) => {
             if (err) {
