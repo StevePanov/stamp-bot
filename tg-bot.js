@@ -4,6 +4,7 @@ var fs      = require('fs');
 var mkdirp = require('mkdirp');
 
 const TOKEN ='549819746:AAHrHrlREF6uRSIRcLPCs9upjYK7ggCMc6I';
+const { exec } = require('child_process');
 
 var isDeletingMode = false;
 var botOptions = { polling: true };
@@ -114,6 +115,16 @@ bot.on('callback_query', function(msg) {
         console.log(err); 
         else
         bot.sendMessage(messageChatId, "Файл сохранен -> "+ url_img, options);
-        menuDialogue();
+
+        exec('./opencv '+ url_img, (err, stdout, stderr) => {
+            if (err) {
+              // node couldn't execute the command
+              return;
+            }
+          
+            // the *entire* stdout and stderr (buffered)
+            console.log(`stdout: ${stdout}`);
+            console.log(`stderr: ${stderr}`);
+          });
     }); 
  }
