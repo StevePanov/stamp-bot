@@ -20,8 +20,7 @@ var options = {
   };
 
 bot.on('message', function(msg) {
-    // console.log("msg.text >", msg.caption);
-    // console.log('msg.photo>', msg.photo);
+
     var messageChatId = msg.chat.id;    
     var messageText = msg.text;
     var idUser = msg.from.id;
@@ -62,7 +61,6 @@ bot.on('message', function(msg) {
             } else {
                 bot.sendMessage(messageChatId, "Удален!", options);
             }
-            menuDialogue();
         })
     }
 });
@@ -77,28 +75,23 @@ bot.onText(/\/start/, function (msg, match) {
             } else {
                 bot.sendMessage(msg.chat.id, 'Выберите действие:', options);
             }
-            
         }
     })
 });
 
 bot.onText(/\/delete/, function (msg, match) {
-
     fs.readdir("img/"+msg.from.id, function(error, items) {
         if(error) {
             console.log(error);
         } else {
             if (!items.length) {
-                bot.sendMessage(msg.from.id, 'Нет печатей для просмотра, добавьте новые');
+                bot.sendMessage(msg.from.id, 'Нет печатей для удаления, добавьте новые');
             } else {
-                for (let i =0; i<items.length; i++) {
-                    bot.sendPhoto(msg.from.id, 'img/'+msg.from.id+'/'+items[i], {caption: items[i]});
-                }
+                bot.sendMessage(msg.from.id, "Запишите номер фото:");
+                isDeletingMode = true;
             }
         }
     })
-
-
     isDeletingMode = true;
 });
 
@@ -117,11 +110,6 @@ bot.onText(/\/showall/, function (msg, match) {
         }
     })
 });
-
-
-
-function menuDialogue() {
-}
 
 bot.on('callback_query', function(msg) {
     console.log('msg> callback', msg.data);
@@ -146,7 +134,6 @@ bot.on('callback_query', function(msg) {
         isDeletingMode = true;
     }
 });
-
 
  function Creattt(url_img,body,messageChatId){
     fs.writeFile(url_img, body, 'binary', function(err) {
