@@ -41,7 +41,6 @@ bot.on('message', function(msg) {
                     mkdirp(dir, function (err) {
                         if (err) console.error(err)
                         else {
-                            bot.sendMessage(messageChatId, "Папка создана");
                             Creattt(url_img,body,messageChatId)
                         }
                     });
@@ -57,9 +56,9 @@ bot.on('message', function(msg) {
         isDeletingMode = false;
         fs.unlink("img/"+msg.chat.id+"/file_"+msg.text+".jpg", function(error){
             if (error) {
-                bot.sendMessage(messageChatId, "Такого файла не существует!");
+                bot.sendMessage(messageChatId, "Такого файла не существует!", options);
             } else {
-                bot.sendMessage(messageChatId, "Удален!");
+                bot.sendMessage(messageChatId, "Удален!", options);
             }
             menuDialogue();
         })
@@ -91,8 +90,12 @@ bot.on('callback_query', function(msg) {
             if(error) {
                 console.log(error);
             } else {
-                for (let i =0; i<items.length; i++) {
-                    bot.sendPhoto(msg.from.id, 'img/'+msg.from.id+'/'+items[i], {caption: items[i]});
+                if (!items.length) {
+                    bot.sendMessage(msg.from.id, 'Нет печатей для просмотра, добавьте новые');
+                } else {
+                    for (let i =0; i<items.length; i++) {
+                        bot.sendPhoto(msg.from.id, 'img/'+msg.from.id+'/'+items[i], {caption: items[i]});
+                    }
                 }
             }
         })
@@ -110,7 +113,7 @@ bot.on('callback_query', function(msg) {
         if(err)
         console.log(err); 
         else
-        bot.sendMessage(messageChatId, "Файл сохранен -> "+ url_img);
+        bot.sendMessage(messageChatId, "Файл сохранен -> "+ url_img, options);
         menuDialogue();
     }); 
  }
