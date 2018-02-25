@@ -61,6 +61,7 @@ bot.on('message', function(msg) {
             } else {
                 bot.sendMessage(messageChatId, "Удален!");
             }
+            menuDialogue();
         })
     }
 });
@@ -79,6 +80,9 @@ bot.onText(/\/start/, function (msg, match) {
         }
     })
 });
+
+function menuDialogue() {
+}
 
 bot.on('callback_query', function(msg) {
     console.log('msg> callback', msg.data);
@@ -107,5 +111,6 @@ bot.on('callback_query', function(msg) {
         console.log(err); 
         else
         bot.sendMessage(messageChatId, "Файл сохранен -> "+ url_img);
+        menuDialogue();
     }); 
  }
