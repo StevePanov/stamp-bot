@@ -16,8 +16,9 @@ var options = {
       inline_keyboard: [
         [{ text: 'Показать все', callback_data: '/showAll' }, { text: 'Удалить', callback_data: '/delete' }]
       ]
-    })
-  };
+    }),
+    one_time_keyboard: true
+};
 
 bot.on('message', function(msg) {
 
@@ -59,7 +60,7 @@ bot.on('message', function(msg) {
             if (error) {
                 bot.sendMessage(messageChatId, "Такого файла не существует!", options);
             } else {
-                bot.sendMessage(messageChatId, "Удален!", options);
+                bot.sendMessage(messageChatId, "Удален!", {});
             }
         })
     }
@@ -101,7 +102,7 @@ bot.onText(/\/showall/, function (msg, match) {
             console.log(error);
         } else {
             if (!items.length) {
-                bot.sendMessage(msg.from.id, 'Нет печатей для просмотра, добавьте новые');
+                bot.sendMessage(msg.from.id, 'Нет печатей для просмотра, добавьте новые', {});
             } else {
                 for (let i =0; i<items.length; i++) {
                     bot.sendPhoto(msg.from.id, 'img/'+msg.from.id+'/'+items[i], {caption: items[i]});
@@ -122,7 +123,7 @@ bot.on('callback_query', function(msg) {
                     bot.sendMessage(msg.from.id, 'Нет печатей для просмотра, добавьте новые');
                 } else {
                     for (let i =0; i<items.length; i++) {
-                        bot.sendPhoto(msg.from.id, 'img/'+msg.from.id+'/'+items[i], {caption: "/"+items[i]+"[0-9]/"});
+                        bot.sendPhoto(msg.from.id, 'img/'+msg.from.id+'/'+items[i], {caption: "Фото "+items[i].replace(/\D+/g,"")});
                     }
                 }
             }
@@ -137,7 +138,21 @@ bot.on('callback_query', function(msg) {
                 if (!items.length) {
                     bot.sendMessage(msg.from.id, 'Нет печатей для удаления, добавьте новые');
                 } else {
-                    bot.sendMessage(msg.from.id, "Запишите номер фото:");
+
+                    var array = [];
+
+                    for (let i = 0; i < items.length; i++) {
+                        array[i] = items[i].replace(/\D+/g,"");
+                    }
+
+                    var optionsF = {
+                        reply_markup: JSON.stringify({
+                          keyboard: [array],
+                          one_time_keyboard: true
+                        })
+                    };
+
+                    bot.sendMessage(msg.from.id, "Запишите номер фото:", optionsF);
                     isDeletingMode = true;
                 }
             }
